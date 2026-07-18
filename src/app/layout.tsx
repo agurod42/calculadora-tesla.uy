@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { OpenPanelComponent } from "@openpanel/nextjs";
 import "./globals.css";
+
+// clientId de OpenPanel: es público (identifica el proyecto, solo permite
+// ENVIAR eventos). El client secret NO va acá — es server-side.
+const OPENPANEL_CLIENT_ID = "6ec8d021-1781-480f-b7fd-779aa4c0b658";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -20,7 +25,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-UY" className={inter.variable}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <OpenPanelComponent
+          clientId={OPENPANEL_CLIENT_ID}
+          trackScreenViews
+          trackOutgoingLinks
+        />
+        {children}
+      </body>
     </html>
   );
 }
