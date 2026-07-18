@@ -5,8 +5,8 @@ import {
   monthlyPayment,
   simulate,
   type SimulationInput,
-} from "../src/calc.js";
-import { DEFAULTS, TESLA_MODELS } from "../src/data.js";
+} from "../src/calc";
+import { DEFAULTS, TESLA_MODELS } from "../src/data";
 
 const m3standard = TESLA_MODELS.find((m) => m.id === "m3-standard")!;
 

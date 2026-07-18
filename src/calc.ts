@@ -3,7 +3,7 @@
  * salvo campos sufijados `Usd`. `fx` = UYU por USD.
  */
 
-import type { TeslaModel } from "./data.js";
+import type { TeslaModel } from "./data";
 
 // ---------------------------------------------------------------------------
 // Inputs
