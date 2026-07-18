@@ -29,8 +29,10 @@ export const DEFAULTS = {
   homeTariffUyuPerKwh: 2.44 * 1.22,
   /** Carga pública rápida (aprox., varía por operador). */
   publicTariffUyuPerKwh: 9.0,
-  /** Nafta Super 95 (UYU/L). TODO verificar precio ANCAP vigente antes de shippear UI. */
-  fuelPriceUyuPerLiter: 79.0,
+  /** Nafta Súper 95 (UYU/L) — ANCAP julio 2026. */
+  fuelPriceUyuPerLiter: 88.67,
+  /** Gasoil 50S (UYU/L) — ANCAP julio 2026. */
+  dieselPriceUyuPerLiter: 58.68,
   /** Descuento IMESI en frontera (aprox. 30 %). */
   borderDiscount: 0.3,
   /** Cotización UYU/USD (editable en UI). */

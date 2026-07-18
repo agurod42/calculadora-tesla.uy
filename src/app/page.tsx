@@ -43,15 +43,21 @@ export default function Page() {
   const tesla = TESLA_MODELS.find((m) => m.id === teslaId)!;
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
 
-  // Aplica un modelo + año: actualiza consumo y valor sugerido.
+  // Aplica un modelo + año: actualiza consumo, combustible y valor sugerido.
   function applyCar(id: string, yr: number | null) {
     const c = carById(id);
     if (!c) return;
     setCarId(id);
     setYear(yr);
     setLiters(c.litersPer100Km);
+    setFuelBase(
+      c.fuel === "diesel" ? DEFAULTS.dieselPriceUyuPerLiter : DEFAULTS.fuelPriceUyuPerLiter,
+    );
     setResaleUsd(suggestedPrice(id, yr ?? undefined) ?? c.resaleUsd);
   }
+
+  const fuel = carById(carId)?.fuel ?? "nafta";
+  const fuelLabel = fuel === "diesel" ? "gasoil" : "nafta";
 
   function pickBrand(b: string) {
     setBrand(b);
@@ -179,10 +185,10 @@ export default function Page() {
             </>
           )}
 
-          <Field label="Precio de la nafta">
+          <Field label={`Precio de${fuel === "diesel" ? "l gasoil" : " la nafta"}`}>
             <NumberInput value={fuelBase} onChange={setFuelBase} prefix="$" suffix="/ L" step={1} />
           </Field>
-          <Toggle checked={border} onChange={setBorder} label="Cargo nafta más barata en la frontera" />
+          <Toggle checked={border} onChange={setBorder} label={`Cargo ${fuelLabel} más barato en la frontera`} />
 
           <div className="rounded-2xl border border-neutral-200 bg-cloud p-5">
             <div className="flex items-baseline justify-between">
