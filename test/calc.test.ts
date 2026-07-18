@@ -28,6 +28,22 @@ describe("monthlyPayment (sistema francés)", () => {
   it("capital 0 → cuota 0", () => {
     expect(monthlyPayment(0, 12, 36)).toBe(0);
   });
+
+  it("balloon: con residual la cuota es menor que sin residual", () => {
+    const sin = monthlyPayment(30000, 5.8, 24);
+    const con = monthlyPayment(30000, 5.8, 24, 6000);
+    expect(con).toBeLessThan(sin);
+  });
+
+  it("balloon = capital → cuota interés-solo (P × i mensual)", () => {
+    const i = 5.8 / 100 / 12;
+    expect(monthlyPayment(10000, 5.8, 24, 10000)).toBeCloseTo(10000 * i, 4);
+  });
+
+  it("residual se topea al capital (no explota si es mayor)", () => {
+    const i = 5.8 / 100 / 12;
+    expect(monthlyPayment(10000, 5.8, 24, 99999)).toBeCloseTo(10000 * i, 4);
+  });
 });
 
 describe("costos de energía", () => {
@@ -143,5 +159,26 @@ describe("simulate — casos borde", () => {
     expect(r.loanPaymentUyu).toBe(0);
     expect(r.warnings.map((w) => w.code)).toContain("funding-gap-none");
     expect(r.verdict).toBe("rinde");
+  });
+
+  it("Crédito Inteligente (balloon): cuota menor y pago final expuesto", () => {
+    const base: SimulationInput = {
+      ...lowKm,
+      currentCar: { ...lowKm.currentCar, resaleValueUsd: 8_000 },
+      usage: { kmPerMonth: 4000, ...baseUsage },
+      financing: { extraDownUsd: 0, annualRatePct: 5.8, months: 24, currency: "USD" },
+    };
+    const convencional = simulate(base);
+    const inteligente = simulate({
+      ...base,
+      financing: { ...base.financing, residualUsd: 0.2 * m3standard.priceUsd },
+    });
+    // El balloon baja la cuota mensual y expone un pago final > 0.
+    expect(inteligente.loanPaymentUyu).toBeLessThan(convencional.loanPaymentUyu);
+    expect(inteligente.residualUyu).toBeGreaterThan(0);
+    expect(convencional.residualUyu).toBe(0);
+    // El costo total incremental (con intereses) es similar: el balloon no
+    // regala plata, sólo la corre para el final.
+    expect(inteligente.tco5yTeslaUyu).toBeGreaterThan(convencional.tco5yTeslaUyu * 0.9);
   });
 });

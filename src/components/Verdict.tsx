@@ -64,6 +64,9 @@ export function Verdict({ r }: { r: SimulationResult }) {
         {r.loanPaymentUyu > 0 && (
           <Row label="Cuota del préstamo" value={`${uyu(r.loanPaymentUyu)} / mes`} />
         )}
+        {r.residualUyu > 0 && (
+          <Row label="Pago final (cuota global)" value={`${uyu(r.residualUyu)} al final`} />
+        )}
         {r.fixedDeltaUyu !== 0 && (
           <Row
             label="Δ patente + seguro + service"

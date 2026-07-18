@@ -36,6 +36,7 @@ export default function Page() {
   const [currency, setCurrency] = useState<"UI" | "USD">("USD");
   const [loanRate, setLoanRate] = useState<number>(DEFAULTS.loanRateUsdPct);
   const [loanMonths, setLoanMonths] = useState<number>(DEFAULTS.loanMonths);
+  const [financingMode, setFinancingMode] = useState<"convencional" | "inteligente">("convencional");
   const [wallbox, setWallbox] = useState(true);
   const [homeShare, setHomeShare] = useState(90);
   const [seguroServiceCurrent, setSeguroServiceCurrent] = useState<number>(DEFAULTS.seguroServiceUsedUyu);
@@ -80,6 +81,19 @@ export default function Page() {
     setLoanRate(c === "UI" ? DEFAULTS.loanRateUiPct : DEFAULTS.loanRateUsdPct);
   }
 
+  // Crédito Inteligente de Tesla: cuota final (balloon) del 20% del precio,
+  // 24 cuotas, en USD a la tasa de Tesla.
+  function pickFinancingMode(m: "convencional" | "inteligente") {
+    setFinancingMode(m);
+    if (m === "inteligente") {
+      setCurrency("USD");
+      setLoanRate(DEFAULTS.loanRateUsdPct);
+      setLoanMonths(24);
+    }
+  }
+
+  const residualUsd = financingMode === "inteligente" ? 0.2 * tesla.priceUsd : 0;
+
   // Avanza de paso; al llegar al veredicto trackea el cálculo (datos no personales).
   function goNext() {
     if (step === 2) {
@@ -115,14 +129,14 @@ export default function Page() {
         homeTariffUyuPerKwh: DEFAULTS.homeTariffUyuPerKwh,
         publicTariffUyuPerKwh: DEFAULTS.publicTariffUyuPerKwh,
       },
-      financing: { extraDownUsd, annualRatePct: loanRate, months: loanMonths, currency },
+      financing: { extraDownUsd, annualRatePct: loanRate, months: loanMonths, currency, residualUsd },
       fxUyuPerUsd: fx,
       batteryWarrantyKm: DEFAULTS.batteryWarrantyKm,
     };
     return simulate(input);
   }, [
     resaleUsd, liters, fuelPrice, fixedCurrent, tesla, fixedTesla,
-    kmPerMonth, wallbox, homeShare, extraDownUsd, loanRate, loanMonths, currency, fx,
+    kmPerMonth, wallbox, homeShare, extraDownUsd, loanRate, loanMonths, currency, residualUsd, fx,
   ]);
 
   return (
@@ -309,6 +323,23 @@ export default function Page() {
       {/* ---------------- Paso 3 ---------------- */}
       {step === 2 && (
         <div className="animate-fade-up space-y-5">
+          <Field label="Modalidad de financiación">
+            <Select
+              value={financingMode}
+              onChange={(v) => pickFinancingMode(v as "convencional" | "inteligente")}
+              options={[
+                { value: "convencional", label: "Préstamo convencional" },
+                { value: "inteligente", label: "Crédito Inteligente (cuota final)" },
+              ]}
+            />
+            {financingMode === "inteligente" && (
+              <p className="mt-1.5 text-xs text-neutral-400">
+                Modalidad Tesla: 24 cuotas más bajas y una cuota final (pago global) de{" "}
+                {usd(result.residualUyu / fx)} al mes 24. Cuota mensual menor, pero un pago grande al final.
+              </p>
+            )}
+          </Field>
+
           <Field label="¿Ponés plata extra además del usado?" hint="entrega adicional">
             <NumberInput value={extraDownUsd} onChange={setExtraDownUsd} prefix="US$" step={500} />
           </Field>
@@ -344,8 +375,8 @@ export default function Page() {
             <NumberInput value={loanRate} onChange={setLoanRate} suffix="% anual" step={0.5} />
             {currency === "USD" && (
               <p className="mt-1.5 text-xs text-neutral-400">
-                Financiación oficial Tesla (Crédito Convencional): TIN 5,80% anual en USD, sistema
-                francés, anticipo 20%. Un préstamo bancario en UI suele ser más caro.
+                Financiación oficial Tesla ({financingMode === "inteligente" ? "Crédito Inteligente" : "Crédito Convencional"}):
+                TIN 5,80% anual en USD, sistema francés. Un préstamo bancario en UI suele ser más caro.
               </p>
             )}
           </Field>

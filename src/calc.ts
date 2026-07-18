@@ -37,6 +37,9 @@ export interface Financing {
   annualRatePct: number;
   months: number;
   currency: "UI" | "USD";
+  /** Cuota final / pago global (USD) al final del plazo — modalidad tipo
+   *  "Crédito Inteligente" de Tesla. 0 = préstamo convencional sin balloon. */
+  residualUsd?: number;
 }
 
 export interface SimulationInput {
@@ -80,6 +83,8 @@ export interface SimulationResult {
   loanPrincipalUsd: number;
   /** Cuota mensual (UYU al fx dado). */
   loanPaymentUyu: number;
+  /** Cuota final / pago global al término del plazo (UYU). 0 si no aplica. */
+  residualUyu: number;
   /** Ahorro bruto/mes (energía − Δ fijos), sin contar la cuota. */
   grossMonthlySavingsUyu: number;
   /** Ahorro neto/mes durante el préstamo (bruto − cuota). */
@@ -96,13 +101,23 @@ export interface SimulationResult {
 // Primitivas
 // ---------------------------------------------------------------------------
 
-/** Cuota fija, sistema francés. Tasa 0 → división simple. */
-export function monthlyPayment(principal: number, annualRatePct: number, months: number): number {
+/**
+ * Cuota fija, sistema francés. Con `residual` > 0 amortiza sólo (principal −
+ * residual): modela un balloon / pago global final (Crédito Inteligente). El
+ * residual se topea al capital. Tasa 0 → división simple.
+ */
+export function monthlyPayment(
+  principal: number,
+  annualRatePct: number,
+  months: number,
+  residual = 0,
+): number {
   if (principal <= 0) return 0;
   if (months <= 0) throw new RangeError("months must be > 0");
+  const r = Math.min(Math.max(residual, 0), principal);
   const i = annualRatePct / 100 / 12;
-  if (i === 0) return principal / months;
-  return (principal * i) / (1 - Math.pow(1 + i, -months));
+  if (i === 0) return (principal - r) / months;
+  return ((principal - r / Math.pow(1 + i, months)) * i) / (1 - Math.pow(1 + i, -months));
 }
 
 export function fuelMonthlyCost(kmPerMonth: number, litersPer100Km: number, priceUyuPerLiter: number): number {
@@ -138,14 +153,23 @@ export function simulate(input: SimulationInput): SimulationResult {
     0,
     tesla.priceUsd - currentCar.resaleValueUsd - financing.extraDownUsd,
   );
-  const loanPaymentUsd = monthlyPayment(loanPrincipalUsd, financing.annualRatePct, financing.months);
+  const residualUsd = Math.min(Math.max(financing.residualUsd ?? 0, 0), loanPrincipalUsd);
+  const loanPaymentUsd = monthlyPayment(
+    loanPrincipalUsd,
+    financing.annualRatePct,
+    financing.months,
+    residualUsd,
+  );
   const loanPaymentUyu = loanPaymentUsd * fx;
+  const residualUyu = residualUsd * fx;
 
   const netMonthlyDuringLoanUyu = grossMonthlySavingsUyu - loanPaymentUyu;
 
   // Inversión incremental total: lo que efectivamente cuesta pasarse
-  // (precio Tesla − usado), intereses incluidos.
-  const totalInterestUyu = (loanPaymentUsd * financing.months - loanPrincipalUsd) * fx;
+  // (precio Tesla − usado), intereses incluidos. El interés incluye el
+  // balloon (residual) que se paga al final además de las cuotas.
+  const totalInterestUyu =
+    (loanPaymentUsd * financing.months + residualUsd - loanPrincipalUsd) * fx;
   const incrementalInvestmentUyu =
     (tesla.priceUsd - currentCar.resaleValueUsd) * fx + totalInterestUyu;
   const breakevenMonths =
@@ -159,6 +183,7 @@ export function simulate(input: SimulationInput): SimulationResult {
   const tco5yTeslaUyu =
     (evMonthlyUyu + teslaCosts.fixedMonthlyUyu) * HORIZON +
     loanPaymentUyu * loanMonthsInHorizon +
+    (financing.months <= HORIZON ? residualUyu : 0) +
     financing.extraDownUsd * fx;
 
   // Veredicto: rinde si el ahorro cubre la cuota entera; depende si el ahorro
@@ -206,6 +231,7 @@ export function simulate(input: SimulationInput): SimulationResult {
     fixedDeltaUyu,
     loanPrincipalUsd,
     loanPaymentUyu,
+    residualUyu,
     grossMonthlySavingsUyu,
     netMonthlyDuringLoanUyu,
     breakevenMonths,
