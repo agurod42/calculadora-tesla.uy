@@ -28,6 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans">
         <OpenPanelComponent
           clientId={OPENPANEL_CLIENT_ID}
+          apiUrl="/api/op"
+          scriptUrl="/api/op/op1.js"
           trackScreenViews
           trackOutgoingLinks
         />

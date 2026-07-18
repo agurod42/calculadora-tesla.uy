@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useOpenPanel } from "@openpanel/nextjs";
 import { simulate, type SimulationInput } from "@/calc";
 import { DEFAULTS, PRICES_AS_OF, TESLA_MODELS } from "@/data";
 import { CAR_BRANDS, CAR_PRESETS, carById, modelsForBrand } from "@/data/cars";
@@ -13,6 +14,7 @@ import { km, uyu, usd } from "@/lib/format";
 const STEPS = ["Tu auto hoy", "Tu Tesla", "Plata y costos", "Veredicto"];
 
 export default function Page() {
+  const op = useOpenPanel();
   const [step, setStep] = useState(0);
 
   // Paso 1 — auto actual. Cascade marca → modelo → año.
@@ -77,6 +79,25 @@ export default function Page() {
   function pickCurrency(c: "UI" | "USD") {
     setCurrency(c);
     setLoanRate(c === "UI" ? DEFAULTS.loanRateUiPct : DEFAULTS.loanRateUsdPct);
+  }
+
+  // Avanza de paso; al llegar al veredicto trackea el cálculo (datos no personales).
+  function goNext() {
+    if (step === 2) {
+      op.track("calculo_veredicto", {
+        veredicto: result.verdict,
+        tesla: tesla.name,
+        auto_marca: noCar ? "ninguno" : brand,
+        auto_modelo: noCar ? null : carById(carId)?.model ?? null,
+        anio: year,
+        km_mes: kmPerMonth,
+        ahorro_neto_mes_uyu: Math.round(result.netMonthlyDuringLoanUyu),
+        breakeven_meses: Number.isFinite(result.breakevenMonths) ? result.breakevenMonths : null,
+        moneda: currency,
+        carga_en_casa: wallbox,
+      });
+    }
+    setStep((s) => s + 1);
   }
 
   const result = useMemo(() => {
@@ -382,7 +403,7 @@ export default function Page() {
           )}
           {step < 3 ? (
             <button
-              onClick={() => setStep((s) => s + 1)}
+              onClick={goNext}
               className="flex-1 rounded-full bg-ink px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-black"
             >
               {step === 2 ? "Ver si me rinde" : "Siguiente"}
