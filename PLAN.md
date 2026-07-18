@@ -47,6 +47,15 @@ Resultado compartible (estado en URL + card OG).
 ## Etapas
 
 1. ✅ Motor de cálculo + tests.
-2. UI completa client-side (valor usado manual).
-3. Lookup MLU + fallback.
-4. Polish: OG cards, SEO, dominio calculadora-tesla.uy, deploy.
+2. ✅ UI completa client-side.
+3. ✅ Valor del usado desde MercadoLibre. La API de ML está cerrada (403); el
+   sitio web público sí responde (~48 avisos/página, markup
+   `andes-money-amount__fraction`). Ingesta OFFLINE (`scripts/ingest-prices.mjs`)
+   scrapea el HTML de `autos.mercadolibre.com.uy/{marca}/{modelo}`, calcula la
+   mediana por modelo (recorte 10% de extremos, 2 páginas) y escribe
+   `src/data/used-prices.json`. La app lo lee estático → rápido y sin dependencia
+   en runtime. Refrescar con un scheduled task. Fuentes descartadas tras búsqueda
+   profunda: gallito (403/Jina parcial), Chizzo/Clasiautos (caídos), Carone (cuotas,
+   dealer único), aforo SUCIVE (por padrón, no bulk).
+4. Polish: OG cards, SEO, dominio calculadora-tesla.uy, deploy Vercel, scheduled
+   task de refresco del dataset.

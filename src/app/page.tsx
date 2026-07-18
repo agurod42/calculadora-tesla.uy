@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { simulate, type SimulationInput } from "@/calc";
 import { DEFAULTS, PRICES_AS_OF, TESLA_MODELS } from "@/data";
 import { CAR_PRESETS } from "@/data/cars";
+import { USED_PRICES_AS_OF, usedPriceFor } from "@/data/used-prices";
 import { Verdict } from "@/components/Verdict";
 import { Field, NumberInput, Select, Slider, Toggle } from "@/components/ui";
 import { km, uyu, usd } from "@/lib/format";
@@ -13,11 +14,13 @@ const STEPS = ["Tu auto hoy", "Tu Tesla", "Plata y costos", "Veredicto"];
 export default function Page() {
   const [step, setStep] = useState(0);
 
-  // Paso 1 — auto actual
-  const [carId, setCarId] = useState(CAR_PRESETS[0]!.id);
+  // Paso 1 — auto actual. Valor inicial: mediana de ML si hay, si no el preset.
+  const firstCar = CAR_PRESETS[0]!;
+  const firstPrice = usedPriceFor(firstCar.id);
+  const [carId, setCarId] = useState(firstCar.id);
   const [noCar, setNoCar] = useState(false);
-  const [resaleUsd, setResaleUsd] = useState(CAR_PRESETS[0]!.resaleUsd);
-  const [liters, setLiters] = useState(CAR_PRESETS[0]!.litersPer100Km);
+  const [resaleUsd, setResaleUsd] = useState(firstPrice?.median ?? firstCar.resaleUsd);
+  const [liters, setLiters] = useState(firstCar.litersPer100Km);
   const [border, setBorder] = useState(false);
   const [fuelBase, setFuelBase] = useState<number>(DEFAULTS.fuelPriceUyuPerLiter);
   const [kmPerMonth, setKmPerMonth] = useState(1500);
@@ -43,10 +46,12 @@ export default function Page() {
     setCarId(id);
     const c = CAR_PRESETS.find((p) => p.id === id);
     if (c) {
-      setResaleUsd(c.resaleUsd);
+      setResaleUsd(usedPriceFor(id)?.median ?? c.resaleUsd);
       setLiters(c.litersPer100Km);
     }
   }
+
+  const priceInfo = usedPriceFor(carId);
 
   function pickCurrency(c: "UI" | "USD") {
     setCurrency(c);
@@ -119,8 +124,14 @@ export default function Page() {
                   options={CAR_PRESETS.map((c) => ({ value: c.id, label: c.label }))}
                 />
               </Field>
-              <Field label="¿Cuánto pedirías por él?" hint="valor de venta estimado">
+              <Field label="¿Cuánto pedirías por él?" hint="editable">
                 <NumberInput value={resaleUsd} onChange={setResaleUsd} prefix="US$" step={500} />
+                {priceInfo && (
+                  <p className="mt-1.5 text-xs text-neutral-400">
+                    Precio medio en MercadoLibre: {usd(priceInfo.median)} · {priceInfo.count} avisos ·
+                    al {USED_PRICES_AS_OF}
+                  </p>
+                )}
               </Field>
               <Field label="Consumo" hint="editable">
                 <NumberInput value={liters} onChange={setLiters} suffix="L/100 km" step={0.1} />
@@ -262,8 +273,8 @@ export default function Page() {
           <Verdict r={result} />
           <p className="px-1 text-xs leading-relaxed text-neutral-400">
             Estimación orientativa, no es asesoramiento financiero. Precios de referencia al {PRICES_AS_OF}
-            {" "}(Tesla Uruguay, tarifas UTE, nafta ANCAP). Los valores de reventa son promedios; ajustá
-            todo a tu caso.
+            {" "}(Tesla Uruguay, tarifas UTE, nafta ANCAP). El valor del usado es la mediana de avisos
+            publicados en MercadoLibre Uruguay (todos los años y versiones); ajustá todo a tu caso.
           </p>
         </div>
       )}

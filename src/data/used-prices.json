@@ -1,0 +1,158 @@
+{
+  "asOf": "2026-07-18",
+  "source": "mercadolibre.com.uy",
+  "currency": "USD",
+  "note": "Mediana de precios publicados en MercadoLibre Uruguay (todos los años/versiones). Orientativo.",
+  "models": {
+    "vw-nivus": {
+      "median": 23500,
+      "count": 96,
+      "min": 19990,
+      "max": 32990
+    },
+    "vw-polo": {
+      "median": 19400,
+      "count": 96,
+      "min": 14900,
+      "max": 26990
+    },
+    "vw-taos": {
+      "median": 29000,
+      "count": 90,
+      "min": 25000,
+      "max": 43490
+    },
+    "vw-tcross": {
+      "median": 24200,
+      "count": 96,
+      "min": 18990,
+      "max": 33290
+    },
+    "chevrolet-onix": {
+      "median": 14200,
+      "count": 96,
+      "min": 10800,
+      "max": 18500
+    },
+    "chevrolet-tracker": {
+      "median": 20300,
+      "count": 96,
+      "min": 11500,
+      "max": 30490
+    },
+    "fiat-cronos": {
+      "median": 14600,
+      "count": 10,
+      "min": 13900,
+      "max": 16000
+    },
+    "fiat-pulse": {
+      "median": 24000,
+      "count": 96,
+      "min": 19990,
+      "max": 30490
+    },
+    "peugeot-208": {
+      "median": 12600,
+      "count": 96,
+      "min": 9800,
+      "max": 18990
+    },
+    "peugeot-2008": {
+      "median": 15400,
+      "count": 96,
+      "min": 10900,
+      "max": 33990
+    },
+    "renault-sandero": {
+      "median": 10800,
+      "count": 96,
+      "min": 7990,
+      "max": 12990
+    },
+    "renault-duster": {
+      "median": 13900,
+      "count": 96,
+      "min": 9600,
+      "max": 24500
+    },
+    "renault-kardian": {
+      "median": 24800,
+      "count": 24,
+      "min": 21000,
+      "max": 29000
+    },
+    "toyota-yaris": {
+      "median": 17900,
+      "count": 20,
+      "min": 7990,
+      "max": 27990
+    },
+    "toyota-corolla": {
+      "median": 13300,
+      "count": 96,
+      "min": 8700,
+      "max": 35990
+    },
+    "toyota-corolla-cross": {
+      "median": 38700,
+      "count": 96,
+      "min": 28500,
+      "max": 42990
+    },
+    "toyota-hilux": {
+      "median": 39000,
+      "count": 94,
+      "min": 18900,
+      "max": 71490
+    },
+    "toyota-etios": {
+      "median": 12000,
+      "count": 13,
+      "min": 8000,
+      "max": 12800
+    },
+    "ford-territory": {
+      "median": 46000,
+      "count": 18,
+      "min": 39990,
+      "max": 45990
+    },
+    "ford-ranger": {
+      "median": 25000,
+      "count": 94,
+      "min": 11500,
+      "max": 82990
+    },
+    "hyundai-creta": {
+      "median": 19500,
+      "count": 96,
+      "min": 14800,
+      "max": 29990
+    },
+    "hyundai-hb20": {
+      "median": 15200,
+      "count": 96,
+      "min": 11990,
+      "max": 22900
+    },
+    "kia-sportage": {
+      "median": 16000,
+      "count": 94,
+      "min": 10500,
+      "max": 59990
+    },
+    "nissan-kicks": {
+      "median": 17000,
+      "count": 96,
+      "min": 14900,
+      "max": 21500
+    },
+    "suzuki-vitara": {
+      "median": 14700,
+      "count": 96,
+      "min": 10900,
+      "max": 18700
+    }
+  }
+}
