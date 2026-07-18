@@ -31,8 +31,8 @@ export default function Page() {
 
   // Paso 3 — financiamiento y costos
   const [extraDownUsd, setExtraDownUsd] = useState(0);
-  const [currency, setCurrency] = useState<"UI" | "USD">("UI");
-  const [loanRate, setLoanRate] = useState<number>(DEFAULTS.loanRateUiPct);
+  const [currency, setCurrency] = useState<"UI" | "USD">("USD");
+  const [loanRate, setLoanRate] = useState<number>(DEFAULTS.loanRateUsdPct);
   const [loanMonths, setLoanMonths] = useState<number>(DEFAULTS.loanMonths);
   const [wallbox, setWallbox] = useState(true);
   const [homeShare, setHomeShare] = useState(90);
@@ -255,8 +255,8 @@ export default function Page() {
                 value={currency}
                 onChange={(v) => pickCurrency(v as "UI" | "USD")}
                 options={[
-                  { value: "UI", label: "UI (recomendado)" },
-                  { value: "USD", label: "Dólares" },
+                  { value: "USD", label: "USD (Tesla)" },
+                  { value: "UI", label: "UI (banco)" },
                 ]}
               />
             </Field>
@@ -270,6 +270,12 @@ export default function Page() {
           </div>
           <Field label="Tasa anual" hint="editable">
             <NumberInput value={loanRate} onChange={setLoanRate} suffix="% anual" step={0.5} />
+            {currency === "USD" && (
+              <p className="mt-1.5 text-xs text-neutral-400">
+                Financiación oficial Tesla (Crédito Convencional): TIN 5,80% anual en USD, sistema
+                francés, anticipo 20%. Un préstamo bancario en UI suele ser más caro.
+              </p>
+            )}
           </Field>
 
           <hr className="border-neutral-100" />

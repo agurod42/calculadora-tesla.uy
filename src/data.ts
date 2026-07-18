@@ -3,7 +3,7 @@
  * La UI muestra `PRICES_AS_OF` para que el usuario sepa qué tan frescos son.
  */
 
-export const PRICES_AS_OF = "2026-07-17";
+export const PRICES_AS_OF = "2026-07-18";
 
 export interface TeslaModel {
   id: string;
@@ -37,11 +37,13 @@ export const DEFAULTS = {
   borderDiscount: 0.3,
   /** Cotización UYU/USD (editable en UI). */
   fxUyuPerUsd: 40,
-  /** Tasa préstamo automotor en UI (real, % anual, aprox.). */
+  /** Tasa préstamo en UI (banco, % anual, aprox. — editable). */
   loanRateUiPct: 9,
-  /** Tasa préstamo automotor en USD (% anual, aprox.). */
-  loanRateUsdPct: 12,
-  loanMonths: 36,
+  /** Tasa préstamo en USD: financiación Tesla Crédito Convencional (TIN 5,80 %
+   *  anual, sistema francés, verificado en tesla.com/es_UY 2026-07-18). */
+  loanRateUsdPct: 5.8,
+  /** Plazo por defecto — coincide con el default de Tesla (60 cuotas). */
+  loanMonths: 60,
   /** Garantía batería Tesla (km) — la temporal (8 años) casi nunca es la que muerde acá. */
   batteryWarrantyKm: 160_000,
 } as const;
