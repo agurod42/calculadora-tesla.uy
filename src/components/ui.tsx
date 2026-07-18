@@ -37,7 +37,7 @@ export function NumberInput({
 }) {
   return (
     <div className="flex items-center rounded-lg border border-neutral-200 bg-white focus-within:border-accent focus-within:ring-1 focus-within:ring-accent">
-      {prefix && <span className="pl-3 text-sm text-neutral-400">{prefix}</span>}
+      {prefix && <span className="whitespace-nowrap pl-3 text-sm text-neutral-400">{prefix}</span>}
       <input
         type="number"
         inputMode="decimal"
@@ -47,7 +47,7 @@ export function NumberInput({
         onChange={(e) => onChange(e.target.value === "" ? 0 : Number(e.target.value))}
         className="w-full bg-transparent px-3 py-2.5 text-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
       />
-      {suffix && <span className="pr-3 text-sm text-neutral-400">{suffix}</span>}
+      {suffix && <span className="whitespace-nowrap pr-3 text-sm text-neutral-400">{suffix}</span>}
     </div>
   );
 }
