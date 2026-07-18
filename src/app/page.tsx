@@ -128,9 +128,13 @@ export default function Page() {
   return (
     <main className="mx-auto min-h-screen max-w-lg px-5 pb-28 pt-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">¿Te rinde un Tesla?</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          ¿Te rinde un Tesla? Calculadora para Uruguay
+        </h1>
         <p className="mt-1 text-sm text-neutral-500">
-          Calculá si te conviene cambiar tu auto por un Tesla en Uruguay. Con números, no con onda.
+          Descubrí si te conviene cambiar tu auto por un Tesla en Uruguay. Comparamos nafta contra
+          electricidad, la cuota del préstamo, la patente y el seguro con precios reales, y te damos
+          un veredicto claro. Gratis y sin registro.
         </p>
       </header>
 
@@ -226,6 +230,50 @@ export default function Page() {
               ≈ {km(Math.round(kmPerMonth / 30))}/día · {km(kmPerMonth * 12)}/año
             </p>
           </div>
+
+          {/* Contenido SEO — visible en la landing y crawleable en el HTML inicial */}
+          <section className="mt-4 space-y-5 border-t border-neutral-100 pt-6 text-sm leading-relaxed text-neutral-600">
+            <div>
+              <h2 className="text-base font-medium text-ink">
+                ¿Conviene un Tesla en Uruguay?
+              </h2>
+              <p className="mt-1.5">
+                Con la llegada de Tesla a Uruguay, muchos se preguntan si les rinde vender su auto a
+                nafta y pasarse a un eléctrico. La respuesta depende de tus kilómetros, de si podés
+                cargar en casa de madrugada y del valor de tu auto actual. Esta calculadora hace la
+                cuenta completa: el ahorro de combustible, la cuota del préstamo, la patente (los
+                eléctricos pagan 3% en vez de 4,5%), el seguro y el service.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-medium text-ink">Preguntas frecuentes</h2>
+              <div className="mt-2 space-y-3">
+                <div>
+                  <h3 className="font-medium text-ink">¿Cuánto sale un Tesla en Uruguay?</h3>
+                  <p className="mt-0.5">
+                    El Model 3 arranca en USD 32.990 y el Model Y en USD 36.490 (precios oficiales de
+                    Tesla Uruguay). La calculadora usa los precios vigentes y la financiación oficial.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-ink">¿Cuánto se ahorra pasando de nafta a eléctrico?</h3>
+                  <p className="mt-0.5">
+                    Cargando en casa en horario valle, la energía cuesta una fracción de la nafta.
+                    Sumá menos patente y menos service. El monto exacto depende de tu uso: probalo arriba.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-ink">¿De dónde salen los datos?</h3>
+                  <p className="mt-0.5">
+                    El valor de tu usado es la mediana de avisos de MercadoLibre por modelo y año; los
+                    precios y la tasa del Tesla son oficiales; la nafta y el gasoil de ANCAP; el dólar
+                    en tiempo real; y el consumo del Tesla de EV Database. Se actualizan solos cada semana.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       )}
 
