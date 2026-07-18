@@ -37,12 +37,18 @@ export default function Page() {
   const [loanMonths, setLoanMonths] = useState<number>(DEFAULTS.loanMonths);
   const [wallbox, setWallbox] = useState(true);
   const [homeShare, setHomeShare] = useState(90);
-  const [fixedCurrent, setFixedCurrent] = useState(8000);
-  const [fixedTesla, setFixedTesla] = useState(11000);
+  const [seguroServiceCurrent, setSeguroServiceCurrent] = useState<number>(DEFAULTS.seguroServiceUsedUyu);
+  const [seguroServiceTesla, setSeguroServiceTesla] = useState<number>(DEFAULTS.seguroServiceEvUyu);
   const [fx, setFx] = useState<number>(MARKET_FX.uyuPerUsd);
 
   const tesla = TESLA_MODELS.find((m) => m.id === teslaId)!;
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
+
+  // Patente mensual = aforo (≈ valor) × alícuota / 12. Usado 4,5 %, Tesla EV 3 %.
+  const currentPatenteMo = noCar ? 0 : (resaleUsd * fx * DEFAULTS.patenteRateUsed) / 12;
+  const teslaPatenteMo = (tesla.priceUsd * fx * DEFAULTS.patenteRateEv) / 12;
+  const fixedCurrent = currentPatenteMo + (noCar ? 0 : seguroServiceCurrent);
+  const fixedTesla = teslaPatenteMo + seguroServiceTesla;
 
   // Aplica un modelo + año: actualiza consumo, combustible y valor sugerido.
   function applyCar(id: string, yr: number | null) {
@@ -309,11 +315,36 @@ export default function Page() {
               Ajustes finos (patente, seguro, cotización)
             </summary>
             <div className="mt-4 space-y-4">
-              <Field label="Costos fijos mensuales de tu auto" hint="patente + seguro + service">
-                <NumberInput value={fixedCurrent} onChange={setFixedCurrent} prefix="$" step={500} />
-              </Field>
-              <Field label="Costos fijos mensuales del Tesla" hint="patente + seguro + service">
-                <NumberInput value={fixedTesla} onChange={setFixedTesla} prefix="$" step={500} />
+              <div className="rounded-lg border border-neutral-200 bg-cloud p-3 text-xs text-neutral-500">
+                <div className="flex justify-between">
+                  <span>Patente {noCar ? "—" : "de tu auto"} (4,5% del valor)</span>
+                  <span className="font-medium text-ink">{uyu(currentPatenteMo)}/mes</span>
+                </div>
+                <div className="mt-1 flex justify-between">
+                  <span>Patente del Tesla (3% — EV)</span>
+                  <span className="font-medium text-ink">{uyu(teslaPatenteMo)}/mes</span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-neutral-400">
+                  Calculada como aforo (≈ valor) × alícuota (SUCIVE 2026). Los EV pagan 3% vs 4,5%.
+                </p>
+              </div>
+              {!noCar && (
+                <Field label="Seguro + service de tu auto" hint="mensual, editable">
+                  <NumberInput
+                    value={seguroServiceCurrent}
+                    onChange={setSeguroServiceCurrent}
+                    prefix="$"
+                    step={500}
+                  />
+                </Field>
+              )}
+              <Field label="Seguro + service del Tesla" hint="mensual, editable">
+                <NumberInput
+                  value={seguroServiceTesla}
+                  onChange={setSeguroServiceTesla}
+                  prefix="$"
+                  step={500}
+                />
               </Field>
               <Field label="Cotización del dólar">
                 <NumberInput value={fx} onChange={setFx} prefix="$" suffix="/ US$" step={0.5} />

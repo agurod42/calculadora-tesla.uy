@@ -46,6 +46,14 @@ export const DEFAULTS = {
   loanRateUsdPct: 5.8,
   /** Plazo por defecto — coincide con el default de Tesla (60 cuotas). */
   loanMonths: 60,
+  /** Patente de rodados = aforo × alícuota (SUCIVE 2026). El aforo se aproxima
+   *  con el valor de mercado. Usado combustión: 4,5 %. EV 0km: 3 %. */
+  patenteRateUsed: 0.045,
+  patenteRateEv: 0.03,
+  /** Seguro + service mensual estimado (UYU) — parte editable de los costos
+   *  fijos. EV: service más barato (sin aceite), seguro algo más caro. */
+  seguroServiceUsedUyu: 4_500,
+  seguroServiceEvUyu: 4_500,
   /** Garantía batería Tesla (km) — la temporal (8 años) casi nunca es la que muerde acá. */
   batteryWarrantyKm: 160_000,
 } as const;
