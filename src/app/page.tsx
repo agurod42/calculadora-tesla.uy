@@ -5,6 +5,7 @@ import { simulate, type SimulationInput } from "@/calc";
 import { DEFAULTS, PRICES_AS_OF, TESLA_MODELS } from "@/data";
 import { CAR_BRANDS, CAR_PRESETS, carById, modelsForBrand } from "@/data/cars";
 import { USED_PRICES_AS_OF, suggestedPrice, usedPriceFor, yearsFor } from "@/data/used-prices";
+import { MARKET_FUEL, MARKET_FX, marketFuelPrice } from "@/data/market";
 import { Verdict } from "@/components/Verdict";
 import { Field, NumberInput, Select, Slider, Toggle } from "@/components/ui";
 import { km, uyu, usd } from "@/lib/format";
@@ -23,7 +24,7 @@ export default function Page() {
   const [resaleUsd, setResaleUsd] = useState(usedPriceFor(firstCar.id)?.median ?? firstCar.resaleUsd);
   const [liters, setLiters] = useState(firstCar.litersPer100Km);
   const [border, setBorder] = useState(false);
-  const [fuelBase, setFuelBase] = useState<number>(DEFAULTS.fuelPriceUyuPerLiter);
+  const [fuelBase, setFuelBase] = useState<number>(MARKET_FUEL.nafta);
   const [kmPerMonth, setKmPerMonth] = useState(1500);
 
   // Paso 2 — Tesla
@@ -38,7 +39,7 @@ export default function Page() {
   const [homeShare, setHomeShare] = useState(90);
   const [fixedCurrent, setFixedCurrent] = useState(8000);
   const [fixedTesla, setFixedTesla] = useState(11000);
-  const [fx, setFx] = useState<number>(DEFAULTS.fxUyuPerUsd);
+  const [fx, setFx] = useState<number>(MARKET_FX.uyuPerUsd);
 
   const tesla = TESLA_MODELS.find((m) => m.id === teslaId)!;
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
@@ -50,9 +51,7 @@ export default function Page() {
     setCarId(id);
     setYear(yr);
     setLiters(c.litersPer100Km);
-    setFuelBase(
-      c.fuel === "diesel" ? DEFAULTS.dieselPriceUyuPerLiter : DEFAULTS.fuelPriceUyuPerLiter,
-    );
+    setFuelBase(marketFuelPrice(c.fuel));
     setResaleUsd(suggestedPrice(id, yr ?? undefined) ?? c.resaleUsd);
   }
 
@@ -187,6 +186,11 @@ export default function Page() {
 
           <Field label={`Precio de${fuel === "diesel" ? "l gasoil" : " la nafta"}`}>
             <NumberInput value={fuelBase} onChange={setFuelBase} prefix="$" suffix="/ L" step={1} />
+            {MARKET_FUEL.asOf && (
+              <p className="mt-1.5 text-xs text-neutral-400">
+                Precio ANCAP {fuel === "diesel" ? "Gasoil 50S" : "Súper 95"} al {MARKET_FUEL.asOf}
+              </p>
+            )}
           </Field>
           <Toggle checked={border} onChange={setBorder} label={`Cargo ${fuelLabel} más barato en la frontera`} />
 
@@ -313,6 +317,9 @@ export default function Page() {
               </Field>
               <Field label="Cotización del dólar">
                 <NumberInput value={fx} onChange={setFx} prefix="$" suffix="/ US$" step={0.5} />
+                {MARKET_FX.asOf && (
+                  <p className="mt-1.5 text-xs text-neutral-400">Cotización al {MARKET_FX.asOf}</p>
+                )}
               </Field>
             </div>
           </details>

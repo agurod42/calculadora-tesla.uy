@@ -19,7 +19,10 @@ npm run build  # build de producción
 - `src/calc.ts` — motor puro (cuota, energía, veredicto, TCO). Testeado.
 - `src/data.ts` — precios Tesla / tarifas UTE / nafta / fx, con fecha de vigencia.
 - `src/data/cars.ts` — presets de autos populares (consumo + valor fallback).
-- `src/data/used-prices.json` — medianas de precio por modelo, generadas por `scripts/ingest-prices.mjs` desde MercadoLibre Uruguay. Refrescar con `node scripts/ingest-prices.mjs`.
+- `src/data/used-prices.json` — medianas de precio por modelo y año, generadas por `scripts/ingest-prices.mjs` desde MercadoLibre Uruguay.
+- `src/data/market-data.json` — FX (open.er-api.com) + combustible ANCAP (datosuruguay.com), generado por `scripts/ingest-market.mjs`.
+
+Ambos datasets se refrescan solos cada semana (scheduled task en el host `calculadora-tesla-precios-refresh`), con un gate de sanidad (`test/data.test.ts`) antes de commitear. Precios/specs/tasa de Tesla se verifican en el mismo task vía navegador (Tesla bloquea el fetch directo).
 - `src/app/page.tsx` — wizard.
 - `src/components/` — UI.
 
