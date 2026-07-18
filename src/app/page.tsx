@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { simulate, type SimulationInput } from "@/calc";
 import { DEFAULTS, PRICES_AS_OF, TESLA_MODELS } from "@/data";
-import { CAR_PRESETS } from "@/data/cars";
-import { USED_PRICES_AS_OF, usedPriceFor } from "@/data/used-prices";
+import { CAR_BRANDS, CAR_PRESETS, carById, modelsForBrand } from "@/data/cars";
+import { USED_PRICES_AS_OF, suggestedPrice, usedPriceFor, yearsFor } from "@/data/used-prices";
 import { Verdict } from "@/components/Verdict";
 import { Field, NumberInput, Select, Slider, Toggle } from "@/components/ui";
 import { km, uyu, usd } from "@/lib/format";
@@ -14,12 +14,13 @@ const STEPS = ["Tu auto hoy", "Tu Tesla", "Plata y costos", "Veredicto"];
 export default function Page() {
   const [step, setStep] = useState(0);
 
-  // Paso 1 — auto actual. Valor inicial: mediana de ML si hay, si no el preset.
+  // Paso 1 — auto actual. Cascade marca → modelo → año.
   const firstCar = CAR_PRESETS[0]!;
-  const firstPrice = usedPriceFor(firstCar.id);
+  const [brand, setBrand] = useState(firstCar.brand);
   const [carId, setCarId] = useState(firstCar.id);
+  const [year, setYear] = useState<number | null>(null); // null = cualquier año
   const [noCar, setNoCar] = useState(false);
-  const [resaleUsd, setResaleUsd] = useState(firstPrice?.median ?? firstCar.resaleUsd);
+  const [resaleUsd, setResaleUsd] = useState(usedPriceFor(firstCar.id)?.median ?? firstCar.resaleUsd);
   const [liters, setLiters] = useState(firstCar.litersPer100Km);
   const [border, setBorder] = useState(false);
   const [fuelBase, setFuelBase] = useState<number>(DEFAULTS.fuelPriceUyuPerLiter);
@@ -42,16 +43,25 @@ export default function Page() {
   const tesla = TESLA_MODELS.find((m) => m.id === teslaId)!;
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
 
-  function pickCar(id: string) {
+  // Aplica un modelo + año: actualiza consumo y valor sugerido.
+  function applyCar(id: string, yr: number | null) {
+    const c = carById(id);
+    if (!c) return;
     setCarId(id);
-    const c = CAR_PRESETS.find((p) => p.id === id);
-    if (c) {
-      setResaleUsd(usedPriceFor(id)?.median ?? c.resaleUsd);
-      setLiters(c.litersPer100Km);
-    }
+    setYear(yr);
+    setLiters(c.litersPer100Km);
+    setResaleUsd(suggestedPrice(id, yr ?? undefined) ?? c.resaleUsd);
+  }
+
+  function pickBrand(b: string) {
+    setBrand(b);
+    const first = modelsForBrand(b)[0];
+    if (first) applyCar(first.id, null);
   }
 
   const priceInfo = usedPriceFor(carId);
+  const availableYears = yearsFor(carId);
+  const yearInfo = year != null ? priceInfo?.byYear?.[String(year)] : undefined;
 
   function pickCurrency(c: "UI" | "USD") {
     setCurrency(c);
@@ -117,20 +127,50 @@ export default function Page() {
 
           {!noCar && (
             <>
-              <Field label="¿Qué auto tenés?">
-                <Select
-                  value={carId}
-                  onChange={pickCar}
-                  options={CAR_PRESETS.map((c) => ({ value: c.id, label: c.label }))}
-                />
-              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Marca">
+                  <Select
+                    value={brand}
+                    onChange={pickBrand}
+                    options={CAR_BRANDS.map((b) => ({ value: b, label: b }))}
+                  />
+                </Field>
+                <Field label="Modelo">
+                  <Select
+                    value={carId}
+                    onChange={(id) => applyCar(id, null)}
+                    options={modelsForBrand(brand).map((c) => ({ value: c.id, label: c.model }))}
+                  />
+                </Field>
+              </div>
+
+              {availableYears.length > 0 && (
+                <Field label="Año" hint="afina el precio">
+                  <Select
+                    value={year == null ? "" : String(year)}
+                    onChange={(v) => applyCar(carId, v === "" ? null : Number(v))}
+                    options={[
+                      { value: "", label: "Cualquiera / no sé" },
+                      ...availableYears.map((y) => ({ value: String(y), label: String(y) })),
+                    ]}
+                  />
+                </Field>
+              )}
+
               <Field label="¿Cuánto pedirías por él?" hint="editable">
                 <NumberInput value={resaleUsd} onChange={setResaleUsd} prefix="US$" step={500} />
-                {priceInfo && (
+                {yearInfo ? (
                   <p className="mt-1.5 text-xs text-neutral-400">
-                    Precio medio en MercadoLibre: {usd(priceInfo.median)} · {priceInfo.count} avisos ·
+                    Precio medio {year} en MercadoLibre: {usd(yearInfo.median)} · {yearInfo.count} avisos ·
                     al {USED_PRICES_AS_OF}
                   </p>
+                ) : (
+                  priceInfo && (
+                    <p className="mt-1.5 text-xs text-neutral-400">
+                      Precio medio en MercadoLibre: {usd(priceInfo.median)} · {priceInfo.count} avisos
+                      (todos los años) · al {USED_PRICES_AS_OF}
+                    </p>
+                  )
                 )}
               </Field>
               <Field label="Consumo" hint="editable">

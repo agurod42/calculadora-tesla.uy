@@ -54,10 +54,11 @@ const MODELS = [
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17 Safari/605.1.15";
-const PAGES = [1, 49]; // ML pagina de a 48: _Desde_1 y _Desde_49
+const PAGES = [1, 49, 97]; // ML pagina de a 48
 const MIN_USD = 3_000;
 const MAX_USD = 150_000;
 const MIN_SAMPLE = 5;
+const MIN_YEAR_SAMPLE = 3; // mínimo de avisos para publicar una mediana por año
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -67,17 +68,34 @@ function median(nums) {
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
+/** Mediana redondeada a la centena, con recorte de 10% en cada extremo. */
+function trimmedMedian(nums) {
+  const sorted = [...nums].sort((a, b) => a - b);
+  const cut = Math.floor(sorted.length * 0.1);
+  const trimmed = cut > 0 ? sorted.slice(cut, -cut) : sorted;
+  return {
+    median: Math.round(median(trimmed) / 100) * 100,
+    min: trimmed[0],
+    max: trimmed[trimmed.length - 1],
+  };
+}
+
 /**
- * Extrae precios en US$ del HTML de ML. Solo la fracción de
- * andes-money-amount__fraction; ML muestra todos los precios en US$ en autos.
+ * Extrae {year, price} por aviso del HTML de ML. Cada aviso vive en un bloque
+ * `ui-search-layout__item`; adentro el año es el primer poly-attributes_list__item
+ * de 4 dígitos y el precio la primera andes-money-amount__fraction (todo en US$).
  */
-function parsePrices(html) {
+function parseListings(html) {
   const out = [];
-  const re = /andes-money-amount__fraction[^>]*>([0-9.]+)</gi;
-  let m;
-  while ((m = re.exec(html)) !== null) {
-    const n = Number(m[1].replace(/\./g, ""));
-    if (Number.isFinite(n) && n >= MIN_USD && n <= MAX_USD) out.push(n);
+  const cards = html.split("ui-search-layout__item").slice(1);
+  for (const card of cards) {
+    const pm = card.match(/andes-money-amount__fraction[^>]*>([0-9.]+)</i);
+    if (!pm) continue;
+    const price = Number(pm[1].replace(/\./g, ""));
+    if (!Number.isFinite(price) || price < MIN_USD || price > MAX_USD) continue;
+    const ym = card.match(/poly-attributes_list__item[^>]*>((?:19|20)\d\d)</i);
+    const year = ym ? Number(ym[1]) : null;
+    out.push({ year, price });
   }
   return out;
 }
@@ -89,7 +107,7 @@ async function fetchPage(slug, desde) {
   try {
     const res = await fetch(url, { headers: { "user-agent": UA }, signal: ctrl.signal });
     if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
-    return { ok: true, prices: parsePrices(await res.text()) };
+    return { ok: true, listings: parseListings(await res.text()) };
   } catch (e) {
     return { ok: false, reason: String(e.name || e) };
   } finally {
@@ -101,7 +119,7 @@ async function main() {
   const models = {};
   for (const spec of MODELS) {
     process.stdout.write(`· ${spec.id} … `);
-    let prices = [];
+    let listings = [];
     let failed = null;
     for (const desde of PAGES) {
       const r = await fetchPage(spec.slug, desde);
@@ -109,25 +127,37 @@ async function main() {
         failed = r.reason;
         break;
       }
-      prices.push(...r.prices);
-      if (r.prices.length < 40) break; // última página
+      listings.push(...r.listings);
+      if (r.listings.length < 40) break; // última página
       await sleep(800);
     }
 
+    const prices = listings.map((l) => l.price);
     if (failed && prices.length === 0) {
       console.log(`skip (${failed})`);
     } else if (prices.length >= MIN_SAMPLE) {
-      // Recortar 10% de cada extremo (avisos atípicos / mal cargados).
-      const sorted = [...prices].sort((a, b) => a - b);
-      const cut = Math.floor(sorted.length * 0.1);
-      const trimmed = cut > 0 ? sorted.slice(cut, -cut) : sorted;
+      const overall = trimmedMedian(prices);
+      // Medianas por año (solo años con muestra suficiente).
+      const byYearGroups = {};
+      for (const l of listings) {
+        if (l.year == null) continue;
+        (byYearGroups[l.year] ??= []).push(l.price);
+      }
+      const byYear = {};
+      for (const [year, ps] of Object.entries(byYearGroups)) {
+        if (ps.length >= MIN_YEAR_SAMPLE) {
+          byYear[year] = { median: trimmedMedian(ps).median, count: ps.length };
+        }
+      }
       models[spec.id] = {
-        median: Math.round(median(trimmed) / 100) * 100,
+        median: overall.median,
         count: prices.length,
-        min: trimmed[0],
-        max: trimmed[trimmed.length - 1],
+        min: overall.min,
+        max: overall.max,
+        byYear,
       };
-      console.log(`US$ ${models[spec.id].median} (${prices.length} avisos)`);
+      const nYears = Object.keys(byYear).length;
+      console.log(`US$ ${overall.median} (${prices.length} avisos, ${nYears} años)`);
     } else {
       console.log(`skip (solo ${prices.length} avisos)`);
     }
