@@ -22,7 +22,6 @@ export default function Page() {
   const [brand, setBrand] = useState(firstCar.brand);
   const [carId, setCarId] = useState(firstCar.id);
   const [year, setYear] = useState<number | null>(null); // null = cualquier año
-  const [noCar, setNoCar] = useState(false);
   const [resaleUsd, setResaleUsd] = useState(usedPriceFor(firstCar.id)?.median ?? firstCar.resaleUsd);
   const [liters, setLiters] = useState(firstCar.litersPer100Km);
   const [border, setBorder] = useState(false);
@@ -47,9 +46,9 @@ export default function Page() {
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
 
   // Patente mensual = aforo (≈ valor) × alícuota / 12. Usado 4,5 %, Tesla EV 3 %.
-  const currentPatenteMo = noCar ? 0 : (resaleUsd * fx * DEFAULTS.patenteRateUsed) / 12;
+  const currentPatenteMo = (resaleUsd * fx * DEFAULTS.patenteRateUsed) / 12;
   const teslaPatenteMo = (tesla.priceUsd * fx * DEFAULTS.patenteRateEv) / 12;
-  const fixedCurrent = currentPatenteMo + (noCar ? 0 : seguroServiceCurrent);
+  const fixedCurrent = currentPatenteMo + seguroServiceCurrent;
   const fixedTesla = teslaPatenteMo + seguroServiceTesla;
 
   // Aplica un modelo + año: actualiza consumo, combustible y valor sugerido.
@@ -87,8 +86,8 @@ export default function Page() {
       op.track("calculo_veredicto", {
         veredicto: result.verdict,
         tesla: tesla.name,
-        auto_marca: noCar ? "ninguno" : brand,
-        auto_modelo: noCar ? null : carById(carId)?.model ?? null,
+        auto_marca: brand,
+        auto_modelo: carById(carId)?.model ?? null,
         anio: year,
         km_mes: kmPerMonth,
         ahorro_neto_mes_uyu: Math.round(result.netMonthlyDuringLoanUyu),
@@ -103,10 +102,10 @@ export default function Page() {
   const result = useMemo(() => {
     const input: SimulationInput = {
       currentCar: {
-        resaleValueUsd: noCar ? 0 : resaleUsd,
+        resaleValueUsd: resaleUsd,
         litersPer100Km: liters,
         fuelPriceUyuPerLiter: fuelPrice,
-        fixedMonthlyUyu: noCar ? 0 : fixedCurrent,
+        fixedMonthlyUyu: fixedCurrent,
       },
       tesla,
       teslaCosts: { fixedMonthlyUyu: fixedTesla },
@@ -122,7 +121,7 @@ export default function Page() {
     };
     return simulate(input);
   }, [
-    noCar, resaleUsd, liters, fuelPrice, fixedCurrent, tesla, fixedTesla,
+    resaleUsd, liters, fuelPrice, fixedCurrent, tesla, fixedTesla,
     kmPerMonth, wallbox, homeShare, extraDownUsd, loanRate, loanMonths, currency, fx,
   ]);
 
@@ -155,11 +154,7 @@ export default function Page() {
       {/* ---------------- Paso 1 ---------------- */}
       {step === 0 && (
         <div className="animate-fade-up space-y-5">
-          <Toggle checked={noCar} onChange={setNoCar} label="No entrego ningún auto" />
-
-          {!noCar && (
-            <>
-              <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
                 <Field label="Marca">
                   <Select
                     value={brand}
@@ -208,8 +203,6 @@ export default function Page() {
               <Field label="Consumo" hint="editable">
                 <NumberInput value={liters} onChange={setLiters} suffix="L/100 km" step={0.1} />
               </Field>
-            </>
-          )}
 
           <Field label={`Precio de${fuel === "diesel" ? "l gasoil" : " la nafta"}`}>
             <NumberInput value={fuelBase} onChange={setFuelBase} prefix="$" suffix="/ L" step={1} />
@@ -276,7 +269,7 @@ export default function Page() {
             <p className="text-sm text-neutral-500">Necesitás un préstamo de</p>
             <p className="text-2xl font-semibold text-ink">{usd(result.loanPrincipalUsd)}</p>
             <p className="mt-0.5 text-xs text-neutral-400">
-              {usd(tesla.priceUsd)} del Tesla − {usd((noCar ? 0 : resaleUsd) + extraDownUsd)} que ponés
+              {usd(tesla.priceUsd)} del Tesla − {usd(resaleUsd + extraDownUsd)} que ponés
             </p>
           </div>
 
@@ -338,7 +331,7 @@ export default function Page() {
             <div className="mt-4 space-y-4">
               <div className="rounded-lg border border-neutral-200 bg-cloud p-3 text-xs text-neutral-500">
                 <div className="flex justify-between">
-                  <span>Patente {noCar ? "—" : "de tu auto"} (4,5% del valor)</span>
+                  <span>Patente de tu auto (4,5% del valor)</span>
                   <span className="font-medium text-ink">{uyu(currentPatenteMo)}/mes</span>
                 </div>
                 <div className="mt-1 flex justify-between">
@@ -349,16 +342,14 @@ export default function Page() {
                   Calculada como aforo (≈ valor) × alícuota (SUCIVE 2026). Los EV pagan 3% vs 4,5%.
                 </p>
               </div>
-              {!noCar && (
-                <Field label="Seguro + service de tu auto" hint="mensual, editable">
-                  <NumberInput
-                    value={seguroServiceCurrent}
-                    onChange={setSeguroServiceCurrent}
-                    prefix="$"
-                    step={500}
-                  />
-                </Field>
-              )}
+              <Field label="Seguro + service de tu auto" hint="mensual, editable">
+                <NumberInput
+                  value={seguroServiceCurrent}
+                  onChange={setSeguroServiceCurrent}
+                  prefix="$"
+                  step={500}
+                />
+              </Field>
               <Field label="Seguro + service del Tesla" hint="mensual, editable">
                 <NumberInput
                   value={seguroServiceTesla}
