@@ -27,10 +27,12 @@ export const TESLA_MODELS: TeslaModel[] = [
 ];
 
 export const DEFAULTS = {
-  /** UTE Triple Horario, banda valle (00–07): $2,44/kWh + IVA 22 %. */
+  /** Carga en casa de madrugada (UTE Triple Horario valle / Plan Movilidad):
+   *  ~$2,44/kWh + IVA ≈ $2,80–2,98. */
   homeTariffUyuPerKwh: 2.44 * 1.22,
-  /** Carga pública rápida (aprox., varía por operador). */
-  publicTariffUyuPerKwh: 9.0,
+  /** Carga en red pública UTE 2026 (post-eliminación del subsidio 30% en ene-2026):
+   *  rápida DC ~$11,8/kWh + cargo base, ruta ~$16/kWh. Efectivo ~$14. */
+  publicTariffUyuPerKwh: 14.0,
   /** Nafta Súper 95 (UYU/L) — ANCAP julio 2026. */
   fuelPriceUyuPerLiter: 88.67,
   /** Gasoil 50S (UYU/L) — ANCAP julio 2026. */
@@ -39,7 +41,8 @@ export const DEFAULTS = {
   borderDiscount: 0.3,
   /** Cotización UYU/USD (editable en UI). */
   fxUyuPerUsd: 40,
-  /** Tasa préstamo en UI (banco, % anual, aprox. — editable). */
+  /** Tasa préstamo en UI (banco, % anual, editable). Los automotores en pesos
+   *  rondan 9–15 % anual; en UI es algo menor. 9 % como referencia baja de banco. */
   loanRateUiPct: 9,
   /** Tasa préstamo en USD: financiación Tesla Crédito Convencional (TIN 5,80 %
    *  anual, sistema francés, verificado en tesla.com/es_UY 2026-07-18). */
