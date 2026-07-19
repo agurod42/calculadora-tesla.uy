@@ -16,6 +16,7 @@ const STEPS = ["Tu auto hoy", "Tu Tesla", "Plata y costos", "Veredicto"];
 export default function Page() {
   const op = useOpenPanel();
   const [step, setStep] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   // Paso 1 — auto actual. Cascade marca → modelo → año.
   const firstCar = CAR_PRESETS[0]!;
@@ -93,6 +94,32 @@ export default function Page() {
   }
 
   const residualUsd = financingMode === "inteligente" ? 0.2 * tesla.priceUsd : 0;
+
+  async function shareResult() {
+    const url = "https://calculadoratesla.uy";
+    const modelo = carById(carId)?.model ?? "mi auto";
+    const net = Math.round(result.netMonthlyDuringLoanUyu);
+    let text: string;
+    if (result.verdict === "rinde") {
+      text = `Cambiar mi ${modelo} por un ${tesla.name} me rinde: ahorro ~${uyu(net)}/mes 🔌 Calculá tu caso 👇`;
+    } else if (result.verdict === "depende") {
+      text = `¿Me conviene un ${tesla.name} en Uruguay? Depende — hice los números con datos reales. Probá el tuyo 👇`;
+    } else {
+      text = `Hice los números: cambiar mi ${modelo} por un ${tesla.name} no me rinde (todavía). Calculá tu caso 👇`;
+    }
+    op.track("compartir", { veredicto: result.verdict, tesla: tesla.name });
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "¿Te rinde un Tesla?", text, url });
+      } catch {
+        /* usuario canceló */
+      }
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }
 
   // Avanza de paso; al llegar al veredicto trackea el cálculo (datos no personales).
   function goNext() {
@@ -452,6 +479,12 @@ export default function Page() {
       {step === 3 && (
         <div className="space-y-4">
           <Verdict r={result} />
+          <button
+            onClick={shareResult}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:opacity-90"
+          >
+            {copied ? "¡Link copiado!" : "Compartir mi resultado"}
+          </button>
           <p className="px-1 text-xs leading-relaxed text-neutral-400">
             Estimación orientativa, no es asesoramiento financiero. Precios de referencia al {PRICES_AS_OF}
             {" "}(Tesla Uruguay, tarifas UTE, nafta ANCAP). El valor del usado es la mediana de avisos
