@@ -8,7 +8,6 @@ import { CAR_BRANDS, CAR_PRESETS, carById, modelsForBrand } from "@/data/cars";
 import { USED_PRICES_AS_OF, suggestedPrice, usedPriceFor, yearsFor } from "@/data/used-prices";
 import { MARKET_FUEL, MARKET_FX, marketFuelPrice } from "@/data/market";
 import { Verdict } from "@/components/Verdict";
-import { CarSilhouette } from "@/components/CarSilhouette";
 import { Field, NumberInput, Select, Slider, Toggle } from "@/components/ui";
 import { km, uyu, usd } from "@/lib/format";
 import { encodeState } from "@/lib/shareState";
@@ -358,8 +357,9 @@ export default function Page() {
       {/* ---------------- Paso 2 ---------------- */}
       {step === 1 && (
         <div className="animate-fade-up space-y-3">
-          <div className="flex items-center justify-center rounded-2xl bg-cloud py-6">
-            <CarSilhouette body={tesla.body} color="#171a20" className="h-20 w-auto" />
+          <div className="flex items-center justify-center rounded-2xl bg-white py-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={tesla.image} alt={tesla.name} className="h-40 w-auto object-contain" />
           </div>
           <p className="text-sm text-neutral-500">
             Elegí el modelo. Precios y autonomía oficiales de Tesla Uruguay.
