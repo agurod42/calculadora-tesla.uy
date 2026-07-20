@@ -339,6 +339,18 @@ export default function Page() {
                 </div>
               </div>
             </div>
+
+            <p className="text-xs text-neutral-400">
+              Proyecto de código abierto ·{" "}
+              <a
+                href="https://github.com/agurod42/calculadora-tesla.uy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent underline"
+              >
+                ver el código en GitHub
+              </a>
+            </p>
           </section>
         </div>
       )}
