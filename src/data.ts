@@ -54,9 +54,14 @@ export const DEFAULTS = {
   /** Plazo por defecto — coincide con el default de Tesla (60 cuotas). */
   loanMonths: 60,
   /** Patente de rodados = aforo × alícuota (SUCIVE 2026). El aforo se aproxima
-   *  con el valor de mercado. Usado combustión: 4,5 %. EV 0km: 3 %. */
+   *  con el valor de mercado SIN IVA (SUCIVE afora sobre valor sin IVA; se divide
+   *  el precio por 1 + IVA). Usado combustión: 4,5 %. EV 0km: 3 %. Con este modelo
+   *  los montos matchean los oficiales publicados (Montevideo Portal, 2026-07-20:
+   *  Model 3 Standard ~$33.930/año, Performance ~$51.415/año). */
   patenteRateUsed: 0.045,
   patenteRateEv: 0.03,
+  /** IVA Uruguay (22 %) — para pasar del precio con IVA al aforo sin IVA. */
+  ivaRate: 0.22,
   /** Seguro + service mensual estimado (UYU) — parte editable de los costos
    *  fijos. EV: service más barato (sin aceite), seguro algo más caro. */
   seguroServiceUsedUyu: 4_500,

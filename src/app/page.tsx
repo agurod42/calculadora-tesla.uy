@@ -49,9 +49,10 @@ export default function Page() {
   const tesla = TESLA_MODELS.find((m) => m.id === teslaId)!;
   const fuelPrice = border ? fuelBase * (1 - DEFAULTS.borderDiscount) : fuelBase;
 
-  // Patente mensual = aforo (≈ valor) × alícuota / 12. Usado 4,5 %, Tesla EV 3 %.
-  const currentPatenteMo = (resaleUsd * fx * DEFAULTS.patenteRateUsed) / 12;
-  const teslaPatenteMo = (tesla.priceUsd * fx * DEFAULTS.patenteRateEv) / 12;
+  // Patente mensual = aforo (≈ valor SIN IVA) × alícuota / 12. Usado 4,5 %, Tesla EV 3 %.
+  const sinIva = 1 + DEFAULTS.ivaRate;
+  const currentPatenteMo = ((resaleUsd / sinIva) * fx * DEFAULTS.patenteRateUsed) / 12;
+  const teslaPatenteMo = ((tesla.priceUsd / sinIva) * fx * DEFAULTS.patenteRateEv) / 12;
   const fixedCurrent = currentPatenteMo + seguroServiceCurrent;
   const fixedTesla = teslaPatenteMo + seguroServiceTesla;
 
@@ -496,7 +497,7 @@ export default function Page() {
                   <span className="font-medium text-ink">{uyu(teslaPatenteMo)}/mes</span>
                 </div>
                 <p className="mt-1.5 text-[11px] text-neutral-400">
-                  Calculada como aforo (≈ valor) × alícuota (SUCIVE 2026). Los EV pagan 3% vs 4,5%.
+                  Calculada como aforo (≈ valor sin IVA) × alícuota (SUCIVE 2026). Los EV pagan 3% vs 4,5%.
                 </p>
               </div>
               <Field label="Seguro + service de tu auto" hint="mensual, editable">
