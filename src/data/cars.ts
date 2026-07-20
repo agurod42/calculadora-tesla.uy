@@ -30,22 +30,19 @@ export const CAR_PRESETS: CarPreset[] = catalog.cars.map((c) => ({
   resaleUsd: c.resaleUsd,
 }));
 
-/** Marcas en orden de aparición (Otro siempre al final). */
+/** Marcas ordenadas alfabéticamente (Otro siempre al final). */
 export const CAR_BRANDS: string[] = (() => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const c of CAR_PRESETS) {
-    if (c.brand !== "Otro" && !seen.has(c.brand)) {
-      seen.add(c.brand);
-      out.push(c.brand);
-    }
-  }
-  out.push("Otro");
-  return out;
+  const brands = [...new Set(CAR_PRESETS.map((c) => c.brand).filter((b) => b !== "Otro"))];
+  brands.sort((a, b) => a.localeCompare(b, "es"));
+  brands.push("Otro");
+  return brands;
 })();
 
+/** Modelos de una marca, ordenados alfabéticamente. */
 export function modelsForBrand(brand: string): CarPreset[] {
-  return CAR_PRESETS.filter((c) => c.brand === brand);
+  return CAR_PRESETS.filter((c) => c.brand === brand).sort((a, b) =>
+    a.model.localeCompare(b.model, "es", { numeric: true }),
+  );
 }
 
 export function carById(id: string): CarPreset | undefined {
