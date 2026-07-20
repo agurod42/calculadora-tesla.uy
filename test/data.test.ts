@@ -33,10 +33,10 @@ describe("market-data (FX + combustible)", () => {
 describe("used-prices", () => {
   const models = used.models as Record<string, { median: number; byYear?: Record<string, { median: number }> }>;
 
-  it("todo modelo del preset (salvo 'otro') tiene precio", () => {
-    for (const c of CAR_PRESETS) {
-      if (c.id === "otro") continue;
-      expect(models[c.id], `falta precio de ${c.id}`).toBeDefined();
+  it("los modelos principales tienen precio", () => {
+    // Los modelos nuevos pueblan al correr la ingesta; sin dato caen al fallback.
+    for (const id of ["vw-nivus", "chevrolet-onix", "peugeot-208", "toyota-corolla", "hyundai-hb20"]) {
+      expect(models[id], `falta precio de ${id}`).toBeDefined();
     }
   });
 

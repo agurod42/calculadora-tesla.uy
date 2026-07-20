@@ -23,6 +23,7 @@ export default function Page() {
   const [brand, setBrand] = useState(firstCar.brand);
   const [carId, setCarId] = useState(firstCar.id);
   const [year, setYear] = useState<number | null>(null); // null = cualquier año
+  const [otroText, setOtroText] = useState(""); // texto libre cuando marca = Otro
   const [resaleUsd, setResaleUsd] = useState(usedPriceFor(firstCar.id)?.median ?? firstCar.resaleUsd);
   const [liters, setLiters] = useState(firstCar.litersPer100Km);
   const [border, setBorder] = useState(false);
@@ -128,7 +129,7 @@ export default function Page() {
         veredicto: result.verdict,
         tesla: tesla.name,
         auto_marca: brand,
-        auto_modelo: carById(carId)?.model ?? null,
+        auto_modelo: carId === "otro" ? otroText || null : carById(carId)?.model ?? null,
         anio: year,
         km_mes: kmPerMonth,
         ahorro_neto_mes_uyu: Math.round(result.netMonthlyDuringLoanUyu),
@@ -215,6 +216,21 @@ export default function Page() {
                   />
                 </Field>
               </div>
+
+              {brand === "Otro" && (
+                <Field label="¿Qué auto tenés?" hint="ayudanos a mejorar la lista">
+                  <input
+                    type="text"
+                    value={otroText}
+                    onChange={(e) => setOtroText(e.target.value)}
+                    placeholder="Ej: Volkswagen Virtus 2021"
+                    className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-ink outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                  />
+                  <p className="mt-1.5 text-xs text-neutral-400">
+                    Poné abajo el valor y consumo de tu auto para que la cuenta sea precisa.
+                  </p>
+                </Field>
+              )}
 
               {availableYears.length > 0 && (
                 <Field label="Año" hint="afina el precio">

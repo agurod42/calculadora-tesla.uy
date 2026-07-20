@@ -16,41 +16,18 @@
  * solo se extraen números, nunca se ejecuta nada de la respuesta.
  */
 
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, "..", "src", "data", "used-prices.json");
+const CATALOG = join(__dirname, "..", "src", "data", "car-catalog.json");
 
-// id + slug en ML. Mantener en sync con src/data/cars.ts.
-const MODELS = [
-  { id: "vw-nivus", slug: "volkswagen/nivus" },
-  { id: "vw-polo", slug: "volkswagen/polo" },
-  { id: "vw-taos", slug: "volkswagen/taos" },
-  { id: "vw-tcross", slug: "volkswagen/t-cross" },
-  { id: "chevrolet-onix", slug: "chevrolet/onix" },
-  { id: "chevrolet-tracker", slug: "chevrolet/tracker" },
-  { id: "fiat-cronos", slug: "fiat/cronos" },
-  { id: "fiat-pulse", slug: "fiat/pulse" },
-  { id: "peugeot-208", slug: "peugeot/208" },
-  { id: "peugeot-2008", slug: "peugeot/2008" },
-  { id: "renault-sandero", slug: "renault/sandero" },
-  { id: "renault-duster", slug: "renault/duster" },
-  { id: "renault-kardian", slug: "renault/kardian" },
-  { id: "toyota-yaris", slug: "toyota/yaris" },
-  { id: "toyota-corolla", slug: "toyota/corolla" },
-  { id: "toyota-corolla-cross", slug: "toyota/corolla-cross" },
-  { id: "toyota-hilux", slug: "toyota/hilux" },
-  { id: "toyota-etios", slug: "toyota/etios" },
-  { id: "ford-territory", slug: "ford/territory" },
-  { id: "ford-ranger", slug: "ford/ranger" },
-  { id: "hyundai-creta", slug: "hyundai/creta" },
-  { id: "hyundai-hb20", slug: "hyundai/hb20" },
-  { id: "kia-sportage", slug: "kia/sportage" },
-  { id: "nissan-kicks", slug: "nissan/kicks" },
-  { id: "suzuki-vitara", slug: "suzuki/vitara" },
-];
+// Fuente única (compartida con la UI): cada auto con mlSlug != null.
+const MODELS = JSON.parse(readFileSync(CATALOG, "utf8"))
+  .cars.filter((c) => c.mlSlug)
+  .map((c) => ({ id: c.id, slug: c.mlSlug }));
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17 Safari/605.1.15";
