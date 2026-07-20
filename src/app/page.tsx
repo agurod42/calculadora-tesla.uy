@@ -350,6 +350,17 @@ export default function Page() {
                 ver el código en GitHub
               </a>
             </p>
+            <p className="text-xs text-neutral-400">
+              Hecho con cariño por{" "}
+              <a
+                href="https://x.com/agurod42"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent underline"
+              >
+                Agu
+              </a>
+            </p>
           </section>
         </div>
       )}
