@@ -8,8 +8,10 @@ import { CAR_BRANDS, CAR_PRESETS, carById, modelsForBrand } from "@/data/cars";
 import { USED_PRICES_AS_OF, suggestedPrice, usedPriceFor, yearsFor } from "@/data/used-prices";
 import { MARKET_FUEL, MARKET_FX, marketFuelPrice } from "@/data/market";
 import { Verdict } from "@/components/Verdict";
+import { CarSilhouette } from "@/components/CarSilhouette";
 import { Field, NumberInput, Select, Slider, Toggle } from "@/components/ui";
 import { km, uyu, usd } from "@/lib/format";
+import { encodeState } from "@/lib/shareState";
 
 const STEPS = ["Tu auto hoy", "Tu Tesla", "Plata y costos", "Veredicto"];
 
@@ -97,9 +99,16 @@ export default function Page() {
   const residualUsd = financingMode === "inteligente" ? 0.2 * tesla.priceUsd : 0;
 
   async function shareResult() {
-    const url = "https://calculadoratesla.uy";
-    const modelo = carById(carId)?.model ?? "mi auto";
+    const modelo = carId === "otro" ? otroText || "mi auto" : carById(carId)?.model ?? "mi auto";
     const net = Math.round(result.netMonthlyDuringLoanUyu);
+    const slug = encodeState({
+      verdict: result.verdict,
+      teslaId: tesla.id,
+      net,
+      km: result.kmToRinde ?? 0,
+      auto: modelo,
+    });
+    const url = `https://calculadoratesla.uy/r/${slug}`;
     let text: string;
     if (result.verdict === "rinde") {
       text = `Cambiar mi ${modelo} por un ${tesla.name} me rinde: ahorro ~${uyu(net)}/mes 🔌 Calculá tu caso 👇`;
@@ -337,6 +346,9 @@ export default function Page() {
       {/* ---------------- Paso 2 ---------------- */}
       {step === 1 && (
         <div className="animate-fade-up space-y-3">
+          <div className="flex items-center justify-center rounded-2xl bg-cloud py-6">
+            <CarSilhouette body={tesla.body} color="#171a20" className="h-20 w-auto" />
+          </div>
           <p className="text-sm text-neutral-500">
             Elegí el modelo. Precios y autonomía oficiales de Tesla Uruguay.
           </p>
@@ -505,6 +517,7 @@ export default function Page() {
             Estimación orientativa, no es asesoramiento financiero. Precios de referencia al {PRICES_AS_OF}
             {" "}(Tesla Uruguay, tarifas UTE, nafta ANCAP). El valor del usado es la mediana de avisos
             publicados en MercadoLibre Uruguay (todos los años y versiones); ajustá todo a tu caso.
+            Sitio no afiliado a Tesla.
           </p>
         </div>
       )}

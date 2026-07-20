@@ -14,16 +14,18 @@ export interface TeslaModel {
   /** Consumo desde el enchufe (kWh/100 km): consumo combinado real de EV
    *  Database + ~10 % de pérdidas de carga (lo que se paga en el medidor). */
   kwhPer100Km: number;
+  /** Carrocería, para la silueta (Model 3 = sedán, Model Y = SUV). */
+  body: "sedan" | "suv";
 }
 
 /** Precios oficiales Uruguay (lanzamiento julio 2026). Consumo: EV Database
  *  (Vehicle Consumption combinado) × 1,10 por pérdidas de carga. */
 export const TESLA_MODELS: TeslaModel[] = [
-  { id: "m3-standard", name: "Model 3 Standard", priceUsd: 32_990, rangeKm: 534, kwhPer100Km: 14.6 },
-  { id: "m3-premium", name: "Model 3 Premium", priceUsd: 37_990, rangeKm: 750, kwhPer100Km: 15.0 },
-  { id: "m3-performance", name: "Model 3 Performance", priceUsd: 49_990, rangeKm: 528, kwhPer100Km: 16.8 },
-  { id: "my-standard", name: "Model Y Standard", priceUsd: 36_490, rangeKm: 466, kwhPer100Km: 17.4 },
-  { id: "my-premium", name: "Model Y Premium", priceUsd: 41_490, rangeKm: 466, kwhPer100Km: 17.6 },
+  { id: "m3-standard", name: "Model 3 Standard", priceUsd: 32_990, rangeKm: 534, kwhPer100Km: 14.6, body: "sedan" },
+  { id: "m3-premium", name: "Model 3 Premium", priceUsd: 37_990, rangeKm: 750, kwhPer100Km: 15.0, body: "sedan" },
+  { id: "m3-performance", name: "Model 3 Performance", priceUsd: 49_990, rangeKm: 528, kwhPer100Km: 16.8, body: "sedan" },
+  { id: "my-standard", name: "Model Y Standard", priceUsd: 36_490, rangeKm: 466, kwhPer100Km: 17.4, body: "suv" },
+  { id: "my-premium", name: "Model Y Premium", priceUsd: 41_490, rangeKm: 466, kwhPer100Km: 17.6, body: "suv" },
 ];
 
 export const DEFAULTS = {
