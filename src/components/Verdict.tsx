@@ -1,7 +1,7 @@
 "use client";
 
 import type { SimulationResult, Verdict as VerdictType } from "@/calc";
-import { months, uyu } from "@/lib/format";
+import { km, months, uyu } from "@/lib/format";
 
 const VERDICT_COPY: Record<VerdictType, { title: string; sub: string; tone: string }> = {
   rinde: {
@@ -39,6 +39,11 @@ export function Verdict({ r }: { r: SimulationResult }) {
       <div className={`rounded-2xl border p-6 ${c.tone}`}>
         <p className="text-3xl font-semibold tracking-tight">{c.title}</p>
         <p className="mt-1 text-sm opacity-80">{c.sub}</p>
+        {r.verdict !== "rinde" && r.kmToRinde !== null && (
+          <p className="mt-3 text-sm font-medium">
+            Te empezaría a rendir a partir de ~{km(r.kmToRinde)}/mes.
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-3">

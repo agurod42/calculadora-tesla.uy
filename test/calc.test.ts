@@ -106,6 +106,14 @@ describe("simulate — caso @SigloXXcap (6.000 km/mes, Nivus a 18k)", () => {
     expect(r.warnings.map((w) => w.code)).toContain("battery-warranty");
   });
 
+  it("kmToRinde: en ese umbral de km el neto da ≈0 (cruce del veredicto)", () => {
+    const kmBE = r.kmToRinde!;
+    expect(kmBE).toBeGreaterThan(0);
+    const atThreshold = simulate({ ...input, usage: { kmPerMonth: kmBE, ...baseUsage } });
+    // A los km del umbral, el ahorro neto mensual debe estar cerca de cero.
+    expect(Math.abs(atThreshold.netMonthlyDuringLoanUyu)).toBeLessThan(3_000);
+  });
+
   it("TCO 5 años favorece al Tesla", () => {
     expect(r.tco5yTeslaUyu).toBeLessThan(r.tco5yCurrentUyu);
   });

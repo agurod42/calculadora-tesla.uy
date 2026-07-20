@@ -91,6 +91,9 @@ export interface SimulationResult {
   netMonthlyDuringLoanUyu: number;
   /** Meses hasta recuperar la inversión incremental (Infinity si nunca). */
   breakevenMonths: number;
+  /** km/mes a partir de los cuales el cambio empieza a rendir (el ahorro cubre
+   *  la cuota). null si nunca rinde por km (la luz cuesta más que la nafta). */
+  kmToRinde: number | null;
   /** Costo total 5 años, cada lado (energía + fijos + financiamiento, UYU). */
   tco5yCurrentUyu: number;
   tco5yTeslaUyu: number;
@@ -165,6 +168,20 @@ export function simulate(input: SimulationInput): SimulationResult {
 
   const netMonthlyDuringLoanUyu = grossMonthlySavingsUyu - loanPaymentUyu;
 
+  // km a partir de los cuales rinde: el ahorro de energía crece lineal con los
+  // km, mientras que la cuota y los costos fijos no. Despejamos net=0.
+  const blendedTariffUyu =
+    usage.homeChargeShare * usage.homeTariffUyuPerKwh +
+    (1 - usage.homeChargeShare) * usage.publicTariffUyuPerKwh;
+  const perKmSavingUyu =
+    (currentCar.litersPer100Km * currentCar.fuelPriceUyuPerLiter -
+      tesla.kwhPer100Km * blendedTariffUyu) /
+    100;
+  const kmToRinde =
+    perKmSavingUyu <= 0
+      ? null
+      : Math.max(0, Math.round((fixedDeltaUyu + loanPaymentUyu) / perKmSavingUyu / 100) * 100);
+
   // Inversión incremental total: lo que efectivamente cuesta pasarse
   // (precio Tesla − usado), intereses incluidos. El interés incluye el
   // balloon (residual) que se paga al final además de las cuotas.
@@ -235,6 +252,7 @@ export function simulate(input: SimulationInput): SimulationResult {
     grossMonthlySavingsUyu,
     netMonthlyDuringLoanUyu,
     breakevenMonths,
+    kmToRinde,
     tco5yCurrentUyu,
     tco5yTeslaUyu,
     warnings,
