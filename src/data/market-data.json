@@ -1,13 +1,13 @@
 {
   "fx": {
-    "uyuPerUsd": 40.16,
-    "asOf": "2026-07-18",
+    "uyuPerUsd": 40.23,
+    "asOf": "2026-07-20",
     "source": "open.er-api.com"
   },
   "fuel": {
     "naftaSuper95": 88.67,
     "gasoil50s": 58.68,
-    "asOf": "2026-07-18",
+    "asOf": "2026-07-20",
     "source": "datosuruguay.com (ANCAP)"
   }
 }

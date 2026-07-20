@@ -1,13 +1,13 @@
 {
-  "asOf": "2026-07-18",
+  "asOf": "2026-07-20",
   "source": "mercadolibre.com.uy",
   "currency": "USD",
   "note": "Mediana de precios publicados en MercadoLibre Uruguay (todos los años/versiones). Orientativo.",
   "models": {
     "vw-nivus": {
-      "median": 23500,
+      "median": 23000,
       "count": 144,
-      "min": 19990,
+      "min": 19980,
       "max": 32990,
       "byYear": {
         "2021": {
@@ -23,8 +23,8 @@
           "count": 27
         },
         "2024": {
-          "median": 23500,
-          "count": 9
+          "median": 21200,
+          "count": 12
         },
         "2025": {
           "median": 28200,
@@ -32,12 +32,12 @@
         },
         "2026": {
           "median": 29000,
-          "count": 48
+          "count": 45
         }
       }
     },
     "vw-polo": {
-      "median": 19400,
+      "median": 19800,
       "count": 144,
       "min": 14900,
       "max": 26990,
@@ -56,14 +56,14 @@
         },
         "2019": {
           "median": 14900,
-          "count": 9
+          "count": 6
         },
         "2020": {
           "median": 15000,
           "count": 3
         },
         "2021": {
-          "median": 17900,
+          "median": 17700,
           "count": 6
         },
         "2022": {
@@ -76,7 +76,7 @@
         },
         "2025": {
           "median": 19000,
-          "count": 18
+          "count": 21
         },
         "2026": {
           "median": 21000,
@@ -85,22 +85,22 @@
       }
     },
     "vw-taos": {
-      "median": 29000,
-      "count": 135,
-      "min": 25000,
+      "median": 30000,
+      "count": 141,
+      "min": 26900,
       "max": 43490,
       "byYear": {
         "2022": {
-          "median": 27900,
-          "count": 63
+          "median": 28000,
+          "count": 66
         },
         "2023": {
           "median": 29300,
           "count": 30
         },
         "2024": {
-          "median": 33900,
-          "count": 9
+          "median": 34400,
+          "count": 12
         },
         "2026": {
           "median": 43200,
@@ -109,26 +109,26 @@
       }
     },
     "vw-tcross": {
-      "median": 24200,
+      "median": 24600,
       "count": 144,
-      "min": 18990,
+      "min": 18900,
       "max": 33290,
       "byYear": {
         "2020": {
           "median": 19300,
-          "count": 24
+          "count": 21
         },
         "2021": {
-          "median": 20900,
-          "count": 21
+          "median": 19800,
+          "count": 27
         },
         "2022": {
           "median": 20000,
           "count": 3
         },
         "2023": {
-          "median": 21000,
-          "count": 18
+          "median": 22500,
+          "count": 12
         },
         "2024": {
           "median": 24900,
@@ -140,7 +140,7 @@
         },
         "2026": {
           "median": 33300,
-          "count": 42
+          "count": 45
         }
       }
     },
@@ -163,8 +163,8 @@
           "count": 6
         },
         "2018": {
-          "median": 11200,
-          "count": 15
+          "median": 11300,
+          "count": 18
         },
         "2019": {
           "median": 12100,
@@ -175,20 +175,20 @@
           "count": 6
         },
         "2021": {
-          "median": 12900,
-          "count": 12
+          "median": 13500,
+          "count": 9
         },
         "2022": {
           "median": 12700,
           "count": 9
         },
         "2023": {
-          "median": 14400,
-          "count": 30
+          "median": 14700,
+          "count": 36
         },
         "2024": {
-          "median": 15300,
-          "count": 21
+          "median": 15900,
+          "count": 15
         },
         "2025": {
           "median": 16000,
@@ -201,7 +201,7 @@
       }
     },
     "chevrolet-tracker": {
-      "median": 20300,
+      "median": 20500,
       "count": 144,
       "min": 11500,
       "max": 30490,
@@ -215,20 +215,20 @@
           "count": 3
         },
         "2021": {
-          "median": 19600,
-          "count": 27
+          "median": 19800,
+          "count": 36
         },
         "2022": {
           "median": 19700,
           "count": 9
         },
         "2023": {
-          "median": 20900,
-          "count": 15
+          "median": 20700,
+          "count": 12
         },
         "2024": {
-          "median": 22200,
-          "count": 24
+          "median": 23200,
+          "count": 18
         },
         "2025": {
           "median": 30500,
@@ -241,17 +241,13 @@
       }
     },
     "fiat-cronos": {
-      "median": 14600,
-      "count": 10,
+      "median": 14900,
+      "count": 9,
       "min": 13900,
-      "max": 16000,
+      "max": 17990,
       "byYear": {
         "2019": {
           "median": 13900,
-          "count": 3
-        },
-        "2020": {
-          "median": 14000,
           "count": 3
         },
         "2021": {
@@ -261,9 +257,9 @@
       }
     },
     "fiat-pulse": {
-      "median": 24000,
+      "median": 25000,
       "count": 144,
-      "min": 19990,
+      "min": 20500,
       "max": 30490,
       "byYear": {
         "2022": {
@@ -271,8 +267,8 @@
           "count": 6
         },
         "2023": {
-          "median": 16900,
-          "count": 15
+          "median": 16700,
+          "count": 12
         },
         "2025": {
           "median": 28700,
@@ -280,35 +276,31 @@
         },
         "2026": {
           "median": 25000,
-          "count": 111
+          "count": 114
         }
       }
     },
     "peugeot-208": {
-      "median": 12600,
+      "median": 12900,
       "count": 144,
-      "min": 9800,
+      "min": 10200,
       "max": 18990,
       "byYear": {
-        "2014": {
-          "median": 9000,
-          "count": 3
-        },
         "2016": {
-          "median": 10300,
-          "count": 18
+          "median": 10400,
+          "count": 15
         },
         "2017": {
           "median": 11000,
-          "count": 21
+          "count": 24
         },
         "2018": {
           "median": 11000,
           "count": 3
         },
         "2019": {
-          "median": 11600,
-          "count": 18
+          "median": 12000,
+          "count": 21
         },
         "2020": {
           "median": 12000,
@@ -341,9 +333,9 @@
       }
     },
     "peugeot-2008": {
-      "median": 15400,
+      "median": 15700,
       "count": 144,
-      "min": 10900,
+      "min": 10990,
       "max": 33990,
       "byYear": {
         "2015": {
@@ -351,8 +343,8 @@
           "count": 9
         },
         "2016": {
-          "median": 12200,
-          "count": 15
+          "median": 12600,
+          "count": 12
         },
         "2017": {
           "median": 14200,
@@ -363,8 +355,8 @@
           "count": 24
         },
         "2019": {
-          "median": 11000,
-          "count": 9
+          "median": 12000,
+          "count": 12
         },
         "2020": {
           "median": 14800,
@@ -375,7 +367,7 @@
           "count": 3
         },
         "2022": {
-          "median": 16800,
+          "median": 19500,
           "count": 15
         },
         "2023": {
@@ -407,8 +399,8 @@
           "count": 3
         },
         "2011": {
-          "median": 6500,
-          "count": 3
+          "median": 7600,
+          "count": 6
         },
         "2012": {
           "median": 7400,
@@ -419,16 +411,16 @@
           "count": 3
         },
         "2016": {
-          "median": 9400,
-          "count": 30
+          "median": 9000,
+          "count": 27
         },
         "2017": {
-          "median": 9800,
-          "count": 9
+          "median": 9900,
+          "count": 12
         },
         "2018": {
-          "median": 11500,
-          "count": 15
+          "median": 13200,
+          "count": 12
         },
         "2019": {
           "median": 8900,
@@ -455,12 +447,12 @@
     "renault-duster": {
       "median": 13900,
       "count": 144,
-      "min": 9600,
+      "min": 9700,
       "max": 24500,
       "byYear": {
         "2012": {
-          "median": 10300,
-          "count": 6
+          "median": 11000,
+          "count": 3
         },
         "2013": {
           "median": 8900,
@@ -475,20 +467,16 @@
           "count": 18
         },
         "2016": {
-          "median": 10900,
-          "count": 6
-        },
-        "2017": {
-          "median": 12500,
-          "count": 3
+          "median": 9900,
+          "count": 9
         },
         "2018": {
-          "median": 12800,
-          "count": 6
+          "median": 12900,
+          "count": 3
         },
         "2019": {
-          "median": 11900,
-          "count": 3
+          "median": 11200,
+          "count": 6
         },
         "2020": {
           "median": 14400,
@@ -503,8 +491,8 @@
           "count": 3
         },
         "2024": {
-          "median": 18900,
-          "count": 3
+          "median": 19400,
+          "count": 6
         },
         "2025": {
           "median": 24500,
@@ -518,17 +506,17 @@
     },
     "renault-kardian": {
       "median": 24800,
-      "count": 24,
-      "min": 21000,
+      "count": 22,
+      "min": 22300,
       "max": 29000,
       "byYear": {
         "2024": {
           "median": 23900,
-          "count": 4
+          "count": 3
         },
         "2025": {
-          "median": 23000,
-          "count": 6
+          "median": 23600,
+          "count": 5
         },
         "2026": {
           "median": 27000,
@@ -555,7 +543,7 @@
     "toyota-corolla": {
       "median": 13300,
       "count": 144,
-      "min": 8700,
+      "min": 8500,
       "max": 35990,
       "byYear": {
         "1991": {
@@ -583,12 +571,12 @@
           "count": 6
         },
         "2008": {
-          "median": 10700,
-          "count": 18
+          "median": 10500,
+          "count": 15
         },
         "2009": {
-          "median": 9900,
-          "count": 6
+          "median": 8900,
+          "count": 9
         },
         "2010": {
           "median": 12000,
@@ -611,12 +599,12 @@
           "count": 3
         },
         "2017": {
-          "median": 19200,
-          "count": 6
+          "median": 17900,
+          "count": 9
         },
         "2018": {
-          "median": 18900,
-          "count": 9
+          "median": 18400,
+          "count": 6
         },
         "2019": {
           "median": 20800,
@@ -645,18 +633,18 @@
       }
     },
     "toyota-corolla-cross": {
-      "median": 38700,
+      "median": 38000,
       "count": 144,
       "min": 28500,
       "max": 42990,
       "byYear": {
         "2021": {
-          "median": 30900,
-          "count": 3
+          "median": 32400,
+          "count": 6
         },
         "2022": {
-          "median": 30200,
-          "count": 18
+          "median": 30900,
+          "count": 21
         },
         "2023": {
           "median": 28500,
@@ -668,7 +656,7 @@
         },
         "2025": {
           "median": 39000,
-          "count": 39
+          "count": 33
         },
         "2026": {
           "median": 42500,
@@ -677,15 +665,11 @@
       }
     },
     "toyota-hilux": {
-      "median": 39000,
+      "median": 39800,
       "count": 141,
-      "min": 18900,
+      "min": 19500,
       "max": 71490,
       "byYear": {
-        "1995": {
-          "median": 13500,
-          "count": 3
-        },
         "2005": {
           "median": 23900,
           "count": 3
@@ -695,12 +679,12 @@
           "count": 9
         },
         "2012": {
-          "median": 21900,
-          "count": 9
+          "median": 20400,
+          "count": 6
         },
         "2013": {
-          "median": 19500,
-          "count": 3
+          "median": 28000,
+          "count": 6
         },
         "2015": {
           "median": 18500,
@@ -711,24 +695,20 @@
           "count": 15
         },
         "2017": {
-          "median": 23500,
-          "count": 18
+          "median": 24000,
+          "count": 15
         },
         "2019": {
           "median": 46900,
           "count": 9
-        },
-        "2020": {
-          "median": 52900,
-          "count": 3
         },
         "2021": {
           "median": 32900,
           "count": 9
         },
         "2023": {
-          "median": 43900,
-          "count": 9
+          "median": 52900,
+          "count": 12
         },
         "2024": {
           "median": 54900,
@@ -739,15 +719,15 @@
           "count": 3
         },
         "2026": {
-          "median": 61500,
-          "count": 39
+          "median": 57500,
+          "count": 45
         }
       }
     },
     "toyota-etios": {
       "median": 12000,
-      "count": 13,
-      "min": 8000,
+      "count": 12,
+      "min": 11000,
       "max": 12800,
       "byYear": {
         "2015": {
@@ -762,18 +742,18 @@
     },
     "ford-territory": {
       "median": 46000,
-      "count": 18,
+      "count": 17,
       "min": 39990,
       "max": 45990,
       "byYear": {
         "2026": {
           "median": 46000,
-          "count": 15
+          "count": 14
         }
       }
     },
     "ford-ranger": {
-      "median": 25000,
+      "median": 25900,
       "count": 141,
       "min": 11500,
       "max": 82990,
@@ -798,17 +778,13 @@
           "median": 9900,
           "count": 3
         },
-        "2012": {
-          "median": 18500,
-          "count": 3
-        },
         "2013": {
-          "median": 15500,
-          "count": 9
+          "median": 16400,
+          "count": 12
         },
         "2014": {
-          "median": 17000,
-          "count": 15
+          "median": 16000,
+          "count": 12
         },
         "2017": {
           "median": 21900,
@@ -839,8 +815,8 @@
           "count": 3
         },
         "2025": {
-          "median": 83000,
-          "count": 3
+          "median": 77500,
+          "count": 6
         },
         "2026": {
           "median": 71700,
@@ -863,12 +839,16 @@
           "count": 3
         },
         "2018": {
-          "median": 16900,
+          "median": 16800,
           "count": 27
         },
         "2020": {
           "median": 19500,
           "count": 9
+        },
+        "2021": {
+          "median": 18900,
+          "count": 3
         },
         "2022": {
           "median": 18400,
@@ -876,7 +856,7 @@
         },
         "2023": {
           "median": 22900,
-          "count": 33
+          "count": 30
         },
         "2024": {
           "median": 28200,
@@ -893,7 +873,7 @@
       }
     },
     "hyundai-hb20": {
-      "median": 15200,
+      "median": 15700,
       "count": 144,
       "min": 11990,
       "max": 22900,
@@ -911,16 +891,16 @@
           "count": 3
         },
         "2022": {
-          "median": 13900,
-          "count": 42
+          "median": 14000,
+          "count": 36
         },
         "2023": {
-          "median": 14700,
-          "count": 24
+          "median": 14900,
+          "count": 27
         },
         "2024": {
-          "median": 21200,
-          "count": 6
+          "median": 19900,
+          "count": 9
         },
         "2025": {
           "median": 20500,
@@ -938,8 +918,8 @@
     },
     "kia-sportage": {
       "median": 16000,
-      "count": 141,
-      "min": 10500,
+      "count": 144,
+      "min": 10300,
       "max": 59990,
       "byYear": {
         "2010": {
@@ -951,8 +931,8 @@
           "count": 6
         },
         "2012": {
-          "median": 12400,
-          "count": 24
+          "median": 12000,
+          "count": 27
         },
         "2013": {
           "median": 10900,
@@ -970,13 +950,13 @@
           "median": 16000,
           "count": 27
         },
+        "2017": {
+          "median": 17000,
+          "count": 3
+        },
         "2018": {
           "median": 21900,
           "count": 6
-        },
-        "2019": {
-          "median": 19500,
-          "count": 3
         },
         "2020": {
           "median": 19000,
@@ -1016,11 +996,11 @@
         },
         "2018": {
           "median": 15900,
-          "count": 48
+          "count": 51
         },
         "2019": {
-          "median": 16000,
-          "count": 27
+          "median": 16900,
+          "count": 24
         },
         "2020": {
           "median": 17500,
@@ -1031,11 +1011,15 @@
           "count": 18
         },
         "2022": {
-          "median": 19000,
-          "count": 21
+          "median": 19700,
+          "count": 18
         },
         "2025": {
           "median": 26500,
+          "count": 3
+        },
+        "2026": {
+          "median": 34500,
           "count": 3
         },
         "2027": {
@@ -1045,7 +1029,7 @@
       }
     },
     "suzuki-vitara": {
-      "median": 14700,
+      "median": 14800,
       "count": 144,
       "min": 10900,
       "max": 18700,
@@ -1087,12 +1071,12 @@
           "count": 24
         },
         "2016": {
-          "median": 14500,
-          "count": 33
+          "median": 15000,
+          "count": 30
         },
         "2017": {
           "median": 14800,
-          "count": 33
+          "count": 36
         },
         "2018": {
           "median": 16400,
